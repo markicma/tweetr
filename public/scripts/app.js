@@ -48,9 +48,10 @@ $(document).ready(() => {
   $(".new-tweet form input[value=Tweet]").on('click', (event) => {
     event.preventDefault();
     $('#less-content, #more-content').remove();
-    if ($(".new-tweet form textarea[name=text]").val().length > 140) {
+    const input = $(".new-tweet form textarea[name=text]").val().trim();
+    if (input.length > 140) {
       $('.new-tweet form').after(`<p id="less-content">Tweet needs to be less than 140 characters</p>`);
-    } else if (!$(".new-tweet form textarea[name=text]").val()) {
+    } else if (!input) {
       $('.new-tweet form').after(`<p id="more-content">Tweet needs content</p>`);
     } else {
       $.ajax({
