@@ -36,7 +36,8 @@ article.tweet header p {
 }
 
 article.tweet main p {
-  margin: 40px 0px 40px 15px;
+  margin: 40px 15px 40px 15px;
+  overflow-wrap: break-word;
 }
 
 article.tweet footer {

@@ -48,16 +48,20 @@ $(document).ready(() => {
   $(".new-tweet form input[value=Tweet]").on('click', (event) => {
     event.preventDefault();
     $('#less-content, #more-content').remove();
-    const input = $(".new-tweet form textarea[name=text]").val().trim();
-    if (input.length > 140) {
+
+    const textarea = $(".new-tweet form textarea[name=text]")
+    const trimmed_text = textarea.val().trim();
+    textarea.val(trimmed_text);
+
+    if (trimmed_text.length > 140) {
       $('.new-tweet form').after(`<p id="less-content">Tweet needs to be less than 140 characters</p>`);
-    } else if (!input) {
+    } else if (!trimmed_text) {
       $('.new-tweet form').after(`<p id="more-content">Tweet needs content</p>`);
     } else {
       $.ajax({
         method: 'POST',
         url: '/tweets',
-        data: $(".new-tweet form textarea[name=text]").serialize(),
+        data: textarea.serialize(),
       })
       $.ajax({
         method: 'GET',
@@ -66,7 +70,7 @@ $(document).ready(() => {
           createTweetElement(response[response.length - 1]);
         }
       })
-      $(".new-tweet form textarea[name=text]").val('');
+      textarea.val('');
       $(".new-tweet form .counter").text(140);
     }
   });
