@@ -6,6 +6,8 @@ const tweets  = express.Router();
 
 module.exports = function(db) {
 
+  // Where the getTweets function gets called, the callback takes the data and
+  // returns it in json data format.
   tweets.get("/", function(req, res) {
     let tweets = db.getTweets((tweets) => {
       return res.json(tweets);

@@ -4,14 +4,22 @@
  * Reminder: Use (and do all your DOM work in) jQuery's document ready function
  */
 'use strict';
+// When the document has finished loading proceed with the callback function.
 $(document).ready(() => {
 
+  // This function is responsible for creating the html of each new tweet given
+  // the user's name, handle, avatar, tweet context and the date of creation.
   const createTweetElement = (data) => {
+
+    // The e function is an escape function used to escape the inputted data
+    // from cross site scripting.
     const e = (str) => {
     	const div = document.createElement('div');
       div.appendChild(document.createTextNode(str));
       return div.innerHTML;
     }
+      // Each new tweet is added to the html document before the older tweets
+      // that way the newest tweets are seen at the top.
       const $tweet = $("<article>").addClass('tweet').prependTo("section.tweets");
       $tweet.append(`<header>
                       <img src="${e(data.user.avatars.regular)}"/>
@@ -27,12 +35,17 @@ $(document).ready(() => {
       return $tweet;
   };
 
+  // This function is responsible for adding the html to index.html for all
+  // the tweets stored in the database.
   const renderTweets = (tweets) => {
     for (const tweet of tweets) {
       createTweetElement(tweet);
     }
   }
 
+  // This function actually loads the tweets onto the page with an ajax GET
+  // request, if the tweets are successfully retrieved then they are rendered
+  // on the page.
   const loadTweets = () => {
     $.ajax({
       method: 'GET',
@@ -45,18 +58,29 @@ $(document).ready(() => {
 
   loadTweets();
 
+  // When the submit button on the form with the class of new tweet is clicked,
+  // the default post request is prevented. Then if the elements containing
+  // a class of error exist they are removed. To account for white spaces, the
+  // value of the text area is trimmed using .trim() and then the value of the
+  // text area is then set to the trimmed text value that way the text sent to
+  // the database doesn't contain extra white spaces. If the tweet is over 140
+  // characters or has no content then an error message appears with the class
+  // of error. If the tweet has content less than or equal to 140 characters,
+  // an ajax post request takes place to post the data to the database and
+  // then a get request takes place to create the tweet that was just added
+  // to the database. The text area becomes empty and the counter resets.
   $(".new-tweet form input[value=Tweet]").on('click', (event) => {
     event.preventDefault();
-    $('#less-content, #more-content').remove();
+    $('.error').remove();
 
     const textarea = $(".new-tweet form textarea[name=text]")
     const trimmed_text = textarea.val().trim();
     textarea.val(trimmed_text);
 
     if (trimmed_text.length > 140) {
-      $('.new-tweet form').after(`<p id="less-content">Tweet needs to be less than 140 characters</p>`);
+      $('.new-tweet form').after(`<p class="error">Tweet needs to be less than 140 characters</p>`);
     } else if (!trimmed_text) {
-      $('.new-tweet form').after(`<p id="more-content">Tweet needs content</p>`);
+      $('.new-tweet form').after(`<p class="error">Tweet needs content</p>`);
     } else {
       $.ajax({
         method: 'POST',
@@ -75,6 +99,10 @@ $(document).ready(() => {
     }
   });
 
+  // When the button with the id of toggle is clicked the default link reference
+  // is prevented and the form with the class of new-tweet is toggled up and down
+  // when the form is toggled, the textarea is automatically selected using the
+  // .focus() method.
   $("#toggle").on('click', (event) => {
     event.preventDefault();
     $(".new-tweet").slideToggle(() => {

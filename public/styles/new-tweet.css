@@ -43,7 +43,7 @@
   color: red;
 }
 
-#more-content, #less-content {
+.error {
   text-align: center;
   font-size: 125%;
   margin: 0px 0px;
