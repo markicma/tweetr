@@ -59,29 +59,30 @@ $(document).ready(() => {
   loadTweets();
 
   // When the submit button on the form with the class of new tweet is clicked,
-  // the default post request is prevented. Then if the elements containing
-  // a class of error exist they are removed. To account for white spaces, the
-  // value of the text area is trimmed using .trim() and then the value of the
-  // text area is then set to the trimmed text value that way the text sent to
-  // the database doesn't contain extra white spaces. If the tweet is over 140
-  // characters or has no content then an error message appears with the class
-  // of error. If the tweet has content less than or equal to 140 characters,
-  // an ajax post request takes place to post the data to the database and
-  // then a get request takes place to create the tweet that was just added
-  // to the database. The text area becomes empty and the counter resets.
+  // the default post request is prevented. To account for white spaces, the
+  // value of the text area is trimmed using .trim(). Then the elements containing
+  // a class of error are removed. If the tweet is over 140 characters or has no
+  // content (If tweet contains only spaces it is considered no content) then an
+  // error message appears with the class of error. If the tweet has content less
+  // than or equal to 140 characters, the value of the text area is then set to
+  // the trimmed text value that way the data sent to the database doesn't
+  // contain extra white spaces. An ajax post request takes place to post the
+  // data to the database, then a get request takes place to create the tweet
+  // in html that was just added to the database. The text area becomes empty
+  // and the counter resets.
   $(".new-tweet form input[value=Tweet]").on('click', (event) => {
     event.preventDefault();
-    $('.error').remove();
 
     const textarea = $(".new-tweet form textarea[name=text]")
     const trimmed_text = textarea.val().trim();
-    textarea.val(trimmed_text);
 
-    if (trimmed_text.length > 140) {
+    $('.error').remove();
+    if (textarea.val().length > 140) {
       $('.new-tweet form').after(`<p class="error">Tweet needs to be less than 140 characters</p>`);
     } else if (!trimmed_text) {
       $('.new-tweet form').after(`<p class="error">Tweet needs content</p>`);
     } else {
+      textarea.val(trimmed_text);
       $.ajax({
         method: 'POST',
         url: '/tweets',
